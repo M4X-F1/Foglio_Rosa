@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guida</title>
+  <style>
+    :root {
+      --bg: #0f1226;
+      --card: #15193a;
+      --accent: #ffbf69;
+      --text: #e8eaf6;
+      --muted: #a8b0d9;
+      --ok: #4caf50;
+      --warn: #ff7043;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background:
+        radial-gradient(1200px 600px at 20% 10%, #1a1f4f 0%, var(--bg) 60%) no-repeat,
+        linear-gradient(180deg, #0b0e20 0%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+    header { padding: 32px 20px 8px; text-align: center; }
+    header h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: .3px; }
+    header p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+    main {
+      padding: 24px;
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      align-items: start;
+    }
+    .card {
+      background: linear-gradient(180deg, #1a1f4f 0%, var(--card) 100%);
+      border: 1px solid #2a2f60;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .card h2 { margin: 0 0 12px; font-size: 1.1rem; color: var(--accent); letter-spacing: .4px; }
+    .stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+    }
+    .stat-label { color: var(--muted); font-weight: 600; }
+    .stat-value { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .hero {
+      background: linear-gradient(135deg, rgba(255,191,105,0.12), rgba(255,255,255,0.04));
+      border: 1px dashed rgba(255,191,105,0.45);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-top: 12px;
+    }
+    .window {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .pill {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(76,175,80,0.12);
+      border: 1px solid rgba(76,175,80,0.35);
+    }
+    .pill .label { color: var(--muted); font-size: 0.85rem; }
+    .pill .value { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .clock {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-align: center;
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      margin-bottom: 8px;
+    }
+    footer {
+      padding: 16px 24px 28px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    a { color: #ffd27a; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Alba & Tramonto di oggi • Bologna</h1>
+    <p id="date"></p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Orari solari</h2>
+      <div class="stat">
+        <div class="stat-label">Alba</div>
+        <div class="stat-value" id="sunrise">--:--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Tramonto</div>
+        <div class="stat-value" id="sunset">--:--</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Durata del giorno</div>
+        <div class="stat-value" id="daylength">--:--</div>
+      </div>
+
+      <div class="hero">
+        <p>
+          Puoi guidare da mezz’ora prima dell’alba e fino a mezz’ora dopo il tramonto.
+        </p>
+      </div>
+
+      <div class="window">
+        <div class="pill">
+          <div class="label">Inizio guida</div>
+          <div class="value" id="driveStart">--:--</div>
+        </div>
+        <div class="pill">
+          <div class="label">Fine guida</div>
+          <div class="value" id="driveEnd">--:--</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="statusCard">
+      <h2>Stato attuale</h2>
+      <div class="clock" id="now">--:--:--</div>
+      <div class="stat">
+        <div class="stat-label">È giorno?</div>
+        <div class="stat-value" id="isDay">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Sei nel periodo consentito?</div>
+        <div class="stat-value" id="canDrive">—</div>
+      </div>
+      <div class="stat">
+        <div class="stat-label">Prossimo evento</div>
+        <div class="stat-value" id="nextEvt">—</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Dettagli</h2>
+      <div class="window">
+        <div class="pill">
+          <div class="label">Crepuscolo civile (sera)</div>
+          <div class="value" id="civilTwilight">--:--</div>
+        </div>
+        <div class="pill">
+          <div class="label">Coordinate Bologna</div>
+          <div class="value">
+            44.49°N, 11.34°E
+            <a href="https://alba-tramonto.org/it/bologna" target="_blank">[fonte]</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero" style="margin-top:12px;">
+        <p id="heroSummary">
+          Per oggi a Bologna: alba e tramonto calcolati automaticamente.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      Dati orari per Bologna — aggiornati automaticamente ogni giorno.
+    </div>
+    <div style="margin-top:10px; color:#ffb4a8;">
+      Nota: verifica sempre il Codice della Strada e le condizioni locali.
+    </div>
+  </footer>
+
+<script>
+// --- COORDINATE ---
+const coords = { lat: 44.49, lng: 11.34 };
+let todaySunTimes = {};
+
+// --- FORMATTAZIONE ---
+function fmtHM(d) { return d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit" }); }
+function fmtHMS(d) { return d.toLocaleTimeString([], { hour:"2-digit", minute:"2-digit", second:"2-digit" }); }
+function durationHM(start, end) { const ms = end - start; const min = Math.round(ms/60000); return `${String(min/60|0).padStart(2,"0")}:${String(min%60).padStart(2,"0")}`; }
+
+// --- DATA HEADER ---
+function updateDateHeader() {
+  const now = new Date();
+  const fmt = new Intl.DateTimeFormat("it-IT", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+  document.getElementById("date").textContent = `Oggi è ${fmt.format(now)}`;
+}
+
+// --- FETCH ORARI SOLE ---
+async function fetchSunTimes(date) {
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth()+1).padStart(2,"0");
+  const dd = String(date.getDate()).padStart(2,"0");
+  const url = `https://api.sunrise-sunset.org/json?lat=${coords.lat}&lng=${coords.lng}&date=${yyyy}-${mm}-${dd}&formatted=0`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return {
+    sunrise: new Date(data.results.sunrise),
+    sunset: new Date(data.results.sunset),
+    civil_evening: new Date(data.results.civil_twilight_end)
+  };
+}
+
+// --- AGGIORNA ORARI ---
+async function updateDayInfo() {
+  const today = new Date();
+  const { sunrise, sunset, civil_evening } = await fetchSunTimes(today);
+  const driveStart = new Date(sunrise.getTime() - 30*60000);
+  const driveEnd = new Date(sunset.getTime() + 30*60000);
+  todaySunTimes = { sunrise, sunset, driveStart, driveEnd, civil_evening };
+
+  document.getElementById("sunrise").textContent = fmtHM(sunrise);
+  document.getElementById("sunset").textContent = fmtHM(sunset);
+  document.getElementById("daylength").textContent = durationHM(sunrise, sunset);
+  document.getElementById("driveStart").textContent = fmtHM(driveStart);
+  document.getElementById("driveEnd").textContent = fmtHM(driveEnd);
+  document.getElementById("civilTwilight").innerHTML = `fino alle ${fmtHM(civil_evening)} <a href="#" target="_blank">[fonte]</a>`;
+  document.getElementById("heroSummary").innerHTML = `Per oggi a Bologna: alba alle ${fmtHM(sunrise)} e tramonto alle ${fmtHM(sunset)} <a href="#" target="_blank">[fonte]</a>.`;
+}
+
+// --- AGGIORNA ORA ---
+function updateClockStatus() {
+  const now = new Date();
+  document.getElementById("now").textContent = fmtHMS(now);
+}
+
+// --- AGGIORNA STATO ---
+function updateStatus(sunrise, sunset, driveStart, driveEnd) {
+  const now = new Date();
+  const can = now >= driveStart && now <= driveEnd;
+  const day = now >= sunrise && now <= sunset;
+
+  // Dicitura esatta
+  document.getElementById("canDrive").textContent = can ? "Sì" : "No, ma sei fuori dai coppi? Non puoi giudare.";
+
+  // Colore card stato
+  const card = document.getElementById("statusCard");
+  if(card) {
+    card.style.backgroundColor = can ? "rgba(76,175,80,0.2)" : "rgba(255,112,67,0.2)";
+    card.style.borderColor = can ? "rgba(76,175,80,0.35)" : "rgba(255,112,67,0.35)";
+  }
+
+  document.getElementById("isDay").textContent = day ? "Sì" : "No";
+
+  // Prossimo evento
+  let nextEvt = "";
+  if(now < sunrise) nextEvt = `Alba alle ${fmtHM(sunrise)}`;
+  else if(now < sunset) nextEvt = `Tramonto alle ${fmtHM(sunset)}`;
+  else nextEvt = `Alba domani alle ${fmtHM(new Date(sunrise.getTime()+86400000))}`;
+  document.getElementById("nextEvt").textContent = nextEvt;
+}
+
+// --- AGGIORNAMENTO AUTOMATICO GIORNO ---
+function scheduleMidnightUpdate() {
+  const now = new Date();
+  const ms = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1,0,0,5) - now;
+  setTimeout(async () => { updateDateHeader(); await updateDayInfo(); scheduleMidnightUpdate(); }, ms);
+}
+
+// --- INIZIALIZZAZIONE ---
+updateDateHeader();
+updateDayInfo().then(() => {
+  setInterval(() => {
+    updateClockStatus();
+    if(todaySunTimes.sunrise) updateStatus(todaySunTimes.sunrise, todaySunTimes.sunset, todaySunTimes.driveStart, todaySunTimes.driveEnd);
+  }, 1000);
+});
+scheduleMidnightUpdate();
+</script>
+</body>
+</html>
